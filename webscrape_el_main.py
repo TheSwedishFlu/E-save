@@ -5,8 +5,7 @@ import time
 from heapq import nsmallest
 import schedule
 
-#Import data from website
-
+#Scrape data from website on start up
 r = requests.get('https://www.elbruk.se/timpriser-se3-stockholm')
 fixed_scrape = dict(zip([i[0] for i in re.findall(r"'((2[0-4]|[01]?[0-9]):([0-5]?[0-9]))'", r.text)],
             ast.literal_eval(re.search(r"data: .*(\[.*?\])[\s\S]+(?='Idag snitt')", r.text).group(1))))
@@ -30,14 +29,14 @@ print(now_time)
 
 
 
-#renew fixed_scrape every day / try time her
+#renew fixed_scrape every day / try time here
 def scrape():
     r = requests.get('https://www.elbruk.se/timpriser-se3-stockholm')
     fixed_scrape = dict(zip([i[0] for i in re.findall(r"'((2[0-4]|[01]?[0-9]):([0-5]?[0-9]))'", r.text)],
             ast.literal_eval(re.search(r"data: .*(\[.*?\])[\s\S]+(?='Idag snitt')", r.text).group(1))))
     print(fixed_scrape)
     return fixed_scrape
-schedule.every().day.at("00.05").do(scrape)
+schedule.every().day.at("00:05").do(scrape)
 
 
 
