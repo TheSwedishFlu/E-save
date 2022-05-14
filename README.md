@@ -8,11 +8,12 @@ when the electricity are most expensive**
 
 **Code planning**
 
-1. Getting daily price for electricity.
-2. Finding the 8 cheapest hours of 24 if the price is over max cost value.
-3. Timefunction for when to buy.
-4. Pin output on Rasberry if price is cheap or under max cost. (put on electricity relay).
-5. Override button. (If elecricity is needed on hours even when it's expensive)
-6. Time reset/auto off for override button. Set to 8 hours if override function is still on / forgotten.
+1. Getting daily price for electricity. /Done
+2. Finding the 8 cheapest hours of 24 if the price is over max cost value. /Done
+3. Timefunction for when to buy. /Done
+4. Function for renewing price index exery day. /Done
+5. Pin output on Rasberry if price is cheap or under max cost. (put on electricity relay). /Done
+6. Override button. (If elecricity is needed on hours even when it's expensive) / In progress
+7. Time reset/auto off for override button. Set to 8 hours if override function is still on / forgotten. /In progress
 
 
