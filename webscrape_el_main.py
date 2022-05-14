@@ -30,7 +30,7 @@ print(now_time)
 
 
 
-#renew fixed_scrape every day
+#renew fixed_scrape every day / try time her
 def scrape():
     r = requests.get('https://www.elbruk.se/timpriser-se3-stockholm')
     fixed_scrape = dict(zip([i[0] for i in re.findall(r"'((2[0-4]|[01]?[0-9]):([0-5]?[0-9]))'", r.text)],
