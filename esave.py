@@ -19,9 +19,9 @@ PriceLimit = 80
 
 
 ############### !!!! GPIO can only be active in code on Raspberry platform !!!!! ####################
-#GPIO.setmode(GPIO.BCM) #mode for the type of pin board you use
-#GPIO.setwarnings(False)
-#GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW) #set initial output on pin 18 start low volt
+GPIO.setmode(GPIO.BCM) #mode for the type of pin board you use
+GPIO.setwarnings(False)
+GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW) #set initial output on pin 18 start low volt
 
 
 
@@ -34,13 +34,14 @@ def scrape():
             ast.literal_eval(re.search(r"data: .*(\[.*?\])[\s\S]+(?='Idag snitt')", r.text).group(1))))
     
 fixed_scrape = scrape()
+
 #print(fixed_scrape)
 
 #find the cheapest hours, set hours in nsmallest
 def cheap():
     my_dict = fixed_scrape 
     cheapest_hour = nsmallest(HoursPerDay, my_dict, key=my_dict.get)
-    return [i.strip('0:') for i in cheapest_hour]
+    return [(i.removesuffix(':00')).lstrip('0') or 0 for i in cheapest_hour]
 
 
 #find if price is under a certain thres
@@ -48,8 +49,7 @@ def threshold():
     price_hour = fixed_scrape
     price_hour = {k:v for k,v in price_hour.items() if v < PriceLimit}
     dick = nsmallest(24, price_hour, key=price_hour.get)
-    #print(dick)
-    return ([i.strip('0:') for i in dick])
+    return ([(i.removesuffix(':00')).lstrip('0') or 0 for i in dick])
 
 
 
@@ -63,8 +63,7 @@ while True:
     schedule.run_pending()
     now_time = time.strftime("%H") #update time in loop
     
-    if now_time != "20":
-        now_time = now_time.strip("0:")
+    
     
     #print(now_time)
     cheapest_hours = cheap()
@@ -99,14 +98,6 @@ while True:
 #GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW) '''set initial output on pin 18 start low volt'''
 #GPIO.output(18, GPIO.HIGH) '''put 5 volt current on pin 18'''
 #GPIO.output(18, GPIO.LOW) '''return current on pin 18 to 0 volt'''
-
-
-
-
-
-
-
-
 
 
 
