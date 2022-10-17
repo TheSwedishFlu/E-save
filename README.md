@@ -6,14 +6,18 @@ Python / Rasberry Pi project #inProgress
 Rasberry Pi turn on/off electrical relay on big elecrical consumers and turn them off in the hours
 when the electricity are most expensive**
 
+
+Right now it collecting the daily electricity price and sort out the cheapest hours. You can set how many hours you want to buy.
+If you select 1 hour you get the cheapest hour that day, if you select 4 hours you get the 4 cheapest hours out of the 24 and so on.
+Filter out from cheapest to most expensive the more hours you put in.
+
+You can also set threshold for a price when you always want to buy depending of the size of your wallet.
+for example always buy when the price is under 50 öre.
+
 **Code planning**
 
-1. Getting daily price for electricity. /Done
-2. Finding the 8 cheapest hours of 24 if the price is over max cost value. /Done
-3. Timefunction for when to buy. /Done
-4. Function for renewing price index exery day. /Done
-5. Pin output on Rasberry if price is cheap or under max cost. (put on electricity relay). /Done
-6. Override button. (If elecricity is needed on hours even when it's expensive) / In progress
-7. Time reset/auto off for override button. Set to 8 hours if override function is still on / forgotten. /In progress
+1. Server solution.
+2. Multiple users / accounts.
+3. Web gui.
 
 
