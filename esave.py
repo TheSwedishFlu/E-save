@@ -7,6 +7,8 @@ import time
 from heapq import nsmallest
 import schedule
 import pip._vendor.requests
+import threading
+import logging
 
 #Ange billigaste antal timmar per dygn att köpa el i HoursPerDay
 #Ange maxpris i öre för att ständigt köpa el i PriceLimit
@@ -51,11 +53,39 @@ def threshold():
     dick = nsmallest(24, price_hour, key=price_hour.get)
     return ([(i.removesuffix(':00')).lstrip('0') or 0 for i in dick])
 
+def test():
+    print("scheduler test drive is working"), test
+    
 
 
-#schedules new scrape with  prices from site every day
-schedule.every().day.at("07:19").do(scrape)
+def run_continuously():
+    cease_continuous_run = threading.Event()
+    class ScheduleThread(threading.Thread):
+        @classmethod
+        def run(cls):
+            while not cease_continuous_run.is_set():
+                schedule.run_pending()
+    continuous_thread = ScheduleThread()
+    continuous_thread.start()
+    return cease_continuous_run
 
+def background_job_1():
+    logging.info("Background 1 thread running...")
+
+
+#schedules new scrape with prices from site every day
+if __name__ == "__main__":
+    format = "%(asctime)s: %(message)s"
+    logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
+    logging.info("Main - starting thread")
+    schedule.every(30).seconds.do(background_job_1)
+    schedule.every().day.at("00:10").do(scrape)
+    schedule.every().day.at("03:00").do(scrape)
+    schedule.every().day.at("10:00").do(scrape)
+    stop_run_continuously = run_continuously()
+    logging.info("Main: completed !!")
+    time.sleep(10)
+    #stop_run_continuously.set()
 
 
 #run the program
@@ -85,7 +115,7 @@ while True:
     else:
         print("Right now electricity is to expensive to buy.")
         GPIO.output(18, GPIO.LOW) 
-    time.sleep(30) #sets time between time check in seconds
+    time.sleep(5) #sets time between time check in seconds
     
 
 
