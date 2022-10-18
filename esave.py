@@ -91,8 +91,7 @@ if __name__ == "__main__":
 #run the program
 while True:
     schedule.run_pending()
-    now_time = time.strftime("%H") #update time in loop
-    
+    now_time = time.strftime("%H").lstrip('0')
     
     
     #print(now_time)
