@@ -12,12 +12,8 @@ import re
 #Ange billigaste antal timmar per dygn att köpa el i HoursPerDay
 #Ange maxpris i öre för att ständigt köpa el i PriceLimit
 
-
 HoursPerDay = 10
-PriceLimit = 80
-
-
-
+PriceLimit = 70
 
 ############### !!!! GPIO can only be active in code on Raspberry platform !!!!! ####################
 #GPIO.setmode(GPIO.BCM) #mode for the type of pin board you use
@@ -31,13 +27,12 @@ def scrape():
     r = requests.get('https://www.elbruk.se/timpriser-se3-stockholm')
     print("Lowify is running - Today's price range is collected.")
     print("Updated")
-    fixed_scrape = dict(zip([i[0] for i in re.findall(r"'((2[0-4]|[01]?[0-9]):([0-5]?[0-9]))'", r.text)],
+    return dict(zip([i[0] for i in re.findall(r"'((2[0-4]|[01]?[0-9]):([0-5]?[0-9]))'", r.text)],
             ast.literal_eval(re.search(r"data: .*(\[.*?\])[\s\S]+(?='Idag snitt')", r.text).group(1))))
-    return fixed_scrape
+    
 
 fixed_scrape = scrape()
 
-#print(fixed_scrape)
 
 #find the cheapest hours, set hours in nsmallest
 def cheap():
@@ -54,17 +49,18 @@ def threshold():
     return [re.sub(r'0+(.+)', r'\1', i.rstrip('0').rstrip(':')) for i in price_hour]
 
 
-
 #schedules new scrape with  prices from site every day
-schedule.every().day.at("18:56").do(scrape)
-
-
+#schedule.every().day.at("00:10").do(scrape)
 
 #run the program
 while True:
-    schedule.run_pending()
-    now_time = time.strftime("%H").rstrip('0') #update time in loop
+    #schedule.run_pending()
+    now_time = time.strftime("%H".rstrip('0')) #update time in loop
     
+    scrape_time = time.strftime("%H:%M") #set daily time for scrape
+    if scrape_time == '00:15':
+        scrape()
+        print("Daily scrape is done - pricerange updated")
     
     
     #print(now_time)
@@ -87,7 +83,8 @@ while True:
     else:
         print("Right now electricity is to expensive to buy.")
         #GPIO.output(18, GPIO.LOW) 
-    time.sleep(30) #sets time between time check in seconds
+
+    time.sleep(30) #sets time between time check / loop in seconds
     
 
 
