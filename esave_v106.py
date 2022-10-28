@@ -2,7 +2,7 @@ from multiprocessing.sharedctypes import Value
 from optparse import Values
 import re, requests, ast
 from prompt_toolkit import print_formatted_text
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 from heapq import nsmallest
 import schedule
@@ -16,9 +16,9 @@ HoursPerDay = 10
 PriceLimit = 70
 
 ############### !!!! GPIO can only be active in code on Raspberry platform !!!!! ####################
-#GPIO.setmode(GPIO.BCM) #mode for the type of pin board you use
-#GPIO.setwarnings(False)
-#GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW) #set initial output on pin 18 start low volt
+GPIO.setmode(GPIO.BCM) #mode for the type of pin board you use
+GPIO.setwarnings(False)
+GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW) #set initial output on pin 18 start low volt
 
 
 
@@ -55,8 +55,8 @@ def threshold():
 #run the program
 while True:
     #schedule.run_pending()
-    now_time = time.strftime("%H".rstrip('0')) #update time in loop
-    
+    now_time = time.strftime("%H") #update time in loop
+    now_time = re.sub("^0+(?!$)", "", now_time)
     scrape_time = time.strftime("%H:%M") #set daily time for scrape
     if scrape_time == '00:15':
         scrape()
@@ -74,15 +74,15 @@ while True:
     
     if now_time in cheap_threshold:
         print("Buying cheap electricity by threshold")
-        #GPIO.output(18, GPIO.HIGH)
+        GPIO.output(18, GPIO.HIGH)
 
     elif now_time in cheapest_hours:
         print("Buying cheap elecricity on low hour price right now")
-        #GPIO.output(18, GPIO.HIGH)
+        GPIO.output(18, GPIO.HIGH)
 
     else:
         print("Right now electricity is to expensive to buy.")
-        #GPIO.output(18, GPIO.LOW) 
+        GPIO.output(18, GPIO.LOW) 
 
     time.sleep(30) #sets time between time check / loop in seconds
     
