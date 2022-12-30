@@ -24,12 +24,16 @@ GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW) #set initial output on pin 18 start l
 
 #get scrape from site
 def scrape():
-    r = requests.get('https://www.elbruk.se/timpriser-se3-stockholm')
-    print("Lowify is running - Today's price range is collected.")
-    print("Updated")
-    return dict(zip([i[0] for i in re.findall(r"'((2[0-4]|[01]?[0-9]):([0-5]?[0-9]))'", r.text)],
-            ast.literal_eval(re.search(r"data: .*(\[.*?\])[\s\S]+(?='Idag snitt')", r.text).group(1))))
-    
+    try:
+        r = requests.get('https://www.elbruk.se/timpriser-se3-stockholm')
+        print("Lowify is running - Today's price range is collected.")
+        print("Updated")
+        return dict(zip([i[0] for i in re.findall(r"'((2[0-4]|[01]?[0-9]):([0-5]?[0-9]))'", r.text)],
+                ast.literal_eval(re.search(r"data: .*(\[.*?\])[\s\S]+(?='Idag snitt')", r.text).group(1))))
+    except Exception as e:
+        print("An exception occured while scraping, restart the router")
+        time.sleep(120)
+        scrape()
 
 fixed_scrape = scrape()
 
@@ -97,11 +101,3 @@ while True:
 #GPIO.setup(18, GPIO.OUT, initial=GPIO.LOW) '''set initial output on pin 18 start low volt'''
 #GPIO.output(18, GPIO.HIGH) '''put 5 volt current on pin 18'''
 #GPIO.output(18, GPIO.LOW) '''return current on pin 18 to 0 volt'''
-
-
-
-
-
-
-
-
